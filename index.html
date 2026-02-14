@@ -6,107 +6,103 @@
 <title>Will You Be My Valentine? 💖</title>
 
 <style>
-  body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(135deg,#ff9a9e,#fad0c4);
-    font-family:Arial, sans-serif;
-    overflow:hidden;
-    padding:14px;
-  }
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+  font-family:Arial, sans-serif;
+  overflow:hidden;
+  padding:14px;
+}
 
-  /* Floating hearts */
-  .hearts{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:1;
-  }
-  .heart{
-    position:absolute;
-    bottom:-40px;
-    font-size:20px;
-    animation:floatUp linear forwards;
-    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15));
-  }
-  @keyframes floatUp{
-    0%{transform:translateY(0);opacity:0;}
-    10%{opacity:1;}
-    100%{transform:translateY(-120vh);opacity:0;}
-  }
+/* Floating hearts */
+.hearts{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:1;
+}
+.heart{
+  position:absolute;
+  bottom:-40px;
+  font-size:20px;
+  animation:floatUp linear forwards;
+}
+@keyframes floatUp{
+  0%{transform:translateY(0);opacity:0;}
+  10%{opacity:1;}
+  100%{transform:translateY(-120vh);opacity:0;}
+}
 
-  .card{
-    background:white;
-    padding:25px;
-    border-radius:20px;
-    text-align:center;
-    width:min(90vw,420px);
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
-    position:relative;
-    z-index:2;
-  }
+.card{
+  background:white;
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  width:min(90vw,420px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  position:relative;
+  z-index:2;
+}
 
-  h1{
-    color:#ff3b6b;
-    font-size:22px;
-    margin: 10px 0 10px;
-  }
+h1{
+  color:#ff3b6b;
+  font-size:22px;
+  margin:10px 0;
+  transition:0.3s;
+}
 
-  /* Bear asset (GIF) */
-  .bear{
-    display:block;
-    margin:10px auto 8px;
-    width:min(220px, 65vw);
-    height:auto;
-    animation:bounce 2s infinite ease-in-out;
-  }
-  @keyframes bounce{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-10px);}
-  }
+.bear{
+  display:block;
+  margin:10px auto 8px;
+  width:min(220px,65vw);
+  transition:0.4s;
+  animation:bounce 2s infinite ease-in-out;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
 
-  .buttonRow{
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    margin-top:10px;
-    flex-wrap:wrap;
-  }
+.buttonRow{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin-top:10px;
+}
 
-  button{
-    padding:12px 20px;
-    border:none;
-    border-radius:25px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-    margin:0;
-    touch-action: manipulation;
-  }
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:25px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+}
 
-  #yesBtn{
-    background:#ff3b6b;
-    color:white;
-  }
+#yesBtn{
+  background:#ff3b6b;
+  color:white;
+}
 
-  /* NO starts like normal button (near YES) */
-  #noBtn{
-    background:gray;
-    color:white;
-    user-select:none;
-  }
+#noBtn{
+  background:gray;
+  color:white;
+  user-select:none;
+}
 
-  .message{
-    display:none;
-    font-size:20px;
-    color:#ff3b6b;
-    font-weight:bold;
-    margin-top: 12px;
-  }
+.message{
+  display:none;
+  font-size:20px;
+  color:#ff3b6b;
+  font-weight:bold;
+  margin-top:12px;
+}
 </style>
 </head>
 
@@ -115,14 +111,14 @@
 <div class="hearts" id="heartsLayer"></div>
 
 <div class="card">
-  <h1>Will You Be My Valentine? 💘</h1>
+  <h1 id="questionText">Will You Be My Valentine? 💘</h1>
 
-  <!-- Bear cartoon asset -->
+  <!-- Bear image -->
   <img
+    id="bearImage"
     class="bear"
     src="https://gifdb.com/images/high/cute-love-bear-roses-ou7zho5oosxnpo6k.gif"
     alt="Cute bear"
-    loading="lazy"
   />
 
   <div class="buttonRow">
@@ -131,88 +127,115 @@
   </div>
 
   <div class="message" id="loveMessage">
-    Yaaay! I knew it! 🥰💞
+    I love youuu 😘💞
   </div>
 </div>
 
+<audio id="noSound" src="https://www.soundjay.com/button/sounds/button-10.mp3"></audio>
+
 <script>
-  // -------- Buttons logic (NO runs away + shrinks) ----------
-  const noBtn = document.getElementById("noBtn");
-  const yesBtn = document.getElementById("yesBtn");
-  const message = document.getElementById("loveMessage");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const message = document.getElementById("loveMessage");
+const noSound = document.getElementById("noSound");
+const questionText = document.getElementById("questionText");
+const bearImage = document.getElementById("bearImage");
 
-  let scale = 1;
-  let activated = false;         // becomes "fixed" after first attempt
-  const shrinkStep = 0.12;
-  const minScale = 0.3;
+let noScale = 1;
+let yesScale = 1;
+let activated = false;
+let attempt = 0;
 
-  function moveNo(){
-    // First time user tries: convert NO to fixed-position at its current spot
-    if(!activated){
-      activated = true;
-      const rect = noBtn.getBoundingClientRect();
-      noBtn.style.position = "fixed";
-      noBtn.style.left = rect.left + "px";
-      noBtn.style.top  = rect.top  + "px";
-      noBtn.style.zIndex = "10";
-    }
+const shrinkStep = 0.12;
+const growStep = 0.15;
+const minScale = 0.3;
 
-    // shrink every time
-    scale = Math.max(minScale, scale - shrinkStep);
-    noBtn.style.transform = `scale(${scale})`;
+const texts = [
+  "Are you sure? 😢",
+  "Really sure? 🥺",
+  "Last chance! 💔",
+  "You can’t escape 😏"
+];
 
-    // keep inside screen
+function moveNo(){
+
+  if(attempt < texts.length){
+    questionText.textContent = texts[attempt];
+  } else {
+    questionText.textContent = "Just press YES already 😆💖";
+  }
+  attempt++;
+
+  noSound.currentTime = 0;
+  noSound.play();
+
+  yesScale += growStep;
+  yesBtn.style.transform = `scale(${yesScale})`;
+
+  if(!activated){
+    activated = true;
     const rect = noBtn.getBoundingClientRect();
-    const pad = 12;
-
-    const minX = pad;
-    const maxX = window.innerWidth - rect.width - pad;
-    const minY = pad;
-    const maxY = window.innerHeight - rect.height - pad;
-
-    const x = Math.random() * (maxX - minX) + minX;
-    const y = Math.random() * (maxY - minY) + minY;
-
-    noBtn.style.left = x + "px";
-    noBtn.style.top  = y + "px";
+    noBtn.style.position = "fixed";
+    noBtn.style.left = rect.left + "px";
+    noBtn.style.top  = rect.top + "px";
+    noBtn.style.zIndex = "10";
   }
 
-  // Desktop hover + mobile touch
-  noBtn.addEventListener("mouseover", moveNo);
-  noBtn.addEventListener("click", (e) => { e.preventDefault(); moveNo(); });
-  noBtn.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    moveNo();
-  }, { passive:false });
+  noScale = Math.max(minScale, noScale - shrinkStep);
+  noBtn.style.transform = `scale(${noScale})`;
 
-  yesBtn.addEventListener("click", () => {
-    message.style.display = "block";
-    noBtn.style.display = "none";
-    burstHearts();
-  });
+  const rect = noBtn.getBoundingClientRect();
+  const pad = 10;
 
-  // -------- Floating hearts ----------
-  const heartsLayer = document.getElementById("heartsLayer");
-  const hearts = ["💖","💗","💘","💕","💓","❤️"];
+  const maxX = window.innerWidth - rect.width - pad;
+  const maxY = window.innerHeight - rect.height - pad;
 
-  function spawnHeart(){
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.textContent = hearts[Math.floor(Math.random()*hearts.length)];
-    heart.style.left = Math.random()*100 + "vw";
-    const dur = (3 + Math.random()*3);
-    heart.style.animationDuration = dur + "s";
-    heartsLayer.appendChild(heart);
-    setTimeout(()=>heart.remove(), (dur*1000)+200);
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top  = y + "px";
+}
+
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("click", (e)=>{ e.preventDefault(); moveNo(); });
+noBtn.addEventListener("touchstart",(e)=>{
+  e.preventDefault();
+  moveNo();
+},{passive:false});
+
+yesBtn.addEventListener("click",()=>{
+  questionText.textContent = "You chose LOVE 😘💘";
+  message.style.display="block";
+  noBtn.style.display="none";
+
+  // 🔥 CHANGE BEAR TO KISS GIF
+  bearImage.src = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif";
+
+  burstHearts();
+});
+
+/* Floating hearts */
+const heartsLayer=document.getElementById("heartsLayer");
+const hearts=["💖","💗","💘","💕","💓","❤️"];
+
+function spawnHeart(){
+  const heart=document.createElement("div");
+  heart.className="heart";
+  heart.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.animationDuration=(3+Math.random()*3)+"s";
+  heartsLayer.appendChild(heart);
+  setTimeout(()=>heart.remove(),6000);
+}
+
+setInterval(spawnHeart,400);
+
+function burstHearts(){
+  for(let i=0;i<25;i++){
+    setTimeout(spawnHeart,i*60);
   }
-
-  setInterval(spawnHeart, 400);
-
-  function burstHearts(){
-    for(let i=0;i<20;i++){
-      setTimeout(spawnHeart, i*80);
-    }
-  }
+}
 </script>
 
 </body>
